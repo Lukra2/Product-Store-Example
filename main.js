@@ -1,17 +1,19 @@
-const http = require('node:http')
+const express = require('express')
+const ExpressHBS = require('express-handlebars')
 const routes = require('./routes')
 const DB = require('./db')
 const port = 8080
 
-const server = http.createServer((req, res) => {
-    var url = req.url;
-    routes.AddRoutes(url, req, res);
+const server = express()
+// Configuring
+server.engine("handlebars", ExpressHBS.engine({}))
+server.set("view engine", "handlebars")
+server.use(express.static("./views"))
+
+// Routing
+server.get("/", (req,res) => {
+    res.render('index', {layout: false});
 })
-http.get()
-server.on('listening', () => {
-    console.log("Server running at PORT " + port)
-})
-server.on('connection', (stream) => {
-    console.log("User connected!")
-})
-server.listen(port)
+
+//Listening
+server.listen(port, () => {console.log("Server started at http://localhost:" + port)})
